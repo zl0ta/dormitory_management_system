@@ -15,10 +15,13 @@
   <header>AKADEMIK</header>
   <div class="container">
     <div class="block"></div>
-    <div class="block">
-      <div class="supblock">LOGOWANIE</div>
-      <div class="supblock"><input type="text" /></div>
-      <div class="supblock"><input type="text" /></div>
+    <div class="block" id="bbb">
+      <label >LOGOWANIE</label>
+      <form method="post" action="/login" class="fLogowanie">
+        <input type="login" id="username" name="username" placeholder="Login" class="supblock">
+        <input type="password" id="password" name="password" placeholder="Hasło" class="supblock">
+        <button type="submit" class="supblock">Zaloguj się</button>
+      </form>
       <div class="supblock">Zapomniałem hasło</div>
     </div>
   </div>
