@@ -1,0 +1,100 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  color: white;
+  font-family: "Sometype Mono";
+  background-color: #ebe3d6;
+}
+
+header {
+  width: 100%;
+  height: 100px;
+  background-color: #1f2b39;
+  display: inline-flex;
+  align-items: center;
+  font-size: 64px;
+  justify-content: center;
+}
+
+.container {
+  display: flex;
+  min-height: calc(100% - 100px);
+}
+
+.block:nth-child(1) {
+  background-image: url(images/login_image.png);
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  display: inline-block;
+  width: 100%;
+}
+
+.block:nth-child(2) {
+  align-items: center;
+  font-size: 48px;
+  justify-content: center;
+  color: black;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+}
+
+input,
+select {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  top: -5px;
+  width: 615px;
+  height: 70px;
+  border-radius: 10px;
+  box-sizing: border-box;
+  font-size: px;
+}
+
+input[type=login], input[type=password]{
+  background-color: rgba(88, 131, 182, 50%);
+  padding-left: 20px;
+}
+
+button[type=submit]{
+  background-color: #41576B;
+  color: white;
+  transition: all 0.1s;
+}
+
+input[type=button]:hover{
+  transform: scale(1.005);
+}
+
+::placeholder{
+  color: white;
+}
+
+
+.supblock {
+  width: 615px;
+  height: 70px;
+  border-radius: 10px;
+  font-family: "Sometype Mono";
+  font-size: 40px;
+  border: 0;
+  margin-top: 15px;
+}
+
+#bbb{
+  text-align: center;
+  justify-items: center;
+  padding-top: 100px;
+}

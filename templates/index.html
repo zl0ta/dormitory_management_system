@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AKADEMIK</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sometype+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+
+  </head>
+  <header>AKADEMIK</header>
+  <div class="container">
+    <div class="block"></div>
+    <div class="block" id="bbb">
+      <label >LOGOWANIE</label>
+      <form method="post" action="/login" class="fLogowanie">
+        <input type="login" placeholder="Login" class="supblock" name="username" required>
+        <input type="password" placeholder="Hasło" class="supblock" name="password" required>
+        <button type="submit" class="supblock">Zaloguj się</button>
+      </form>
+      <div class="supblock">Zapomniałem hasło</div>
+    </div>
+  </div>
+  <body></body>
+</html>
