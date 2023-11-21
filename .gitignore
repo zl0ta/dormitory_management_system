@@ -1,0 +1,4 @@
+# Ignore these files and folders
+/__pycache__
+/dormitory
+/README.md
