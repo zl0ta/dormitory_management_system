@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DYREKTOR</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sometype+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/style-dyrektor.css" />
+  </head>
+  <header>
+    <a href="/dyrektor/main"><div class="back"></div></a>
+    <div class="head">DYREKTOR - AKADEMIKI</div>
+    <a href="/"><div class="wyloguj"></div></a>
+  </header>
+  <body>
+    <div class="page">
+      WYSZUKAJ AKADEMIK
+      <form>
+        <input type="text" placeholder="WPISZ SYMBOL"><br>
+        <input type="button" value="Szukaj">
+        <input type="button" value="Resetuj">
+      </form>
+
+      <div class="table">
+        <table>
+          <tr>
+            <th><div class="container"><div class="text">#</div><div class="sort"></div></div></th>
+            <th><div class="container"><div class="text">Symbol</div><div class="sort"></div></div></th>
+            <th><div class="container"><div class="text">Nazwa</div><div class="sort"></div></div></th>
+            <th><div class="container"><div class="text">Liczba pokoi</div><div class="sort"></div></div></th>
+            <th><div class="container"><div class="text">Status</div><div class="sort"></div></div></th>
+            <th><div class="container"><div class="text">Adres</div><div class="sort"></div></div></th>
+          </tr>
+
+          {% for akademik in akademiki %}
+          <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ akademik.SymbolA }}</td>
+              <td>{{ akademik.NazwaA if akademik.NazwaA is not none else "brak danych" }}</td>
+              <td>{{ akademik.LiczbaPokoi if akademik.LiczbaPokoi is not none else "brak danych" }}</td>
+              <td>{{ akademik.Status if akademik.Status is not none else "brak danych" }}</td>
+              <td>{{ akademik.Adres if akademik.Adres is not none else "brak danych" }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+
+      <a href="/dyrektor/akademiki/dodaj"><div class="btnAdd">Dodaj akademik</div></a>
+    </div>
+  </body>
+</html>

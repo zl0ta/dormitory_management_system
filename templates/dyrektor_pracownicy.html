@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DYREKTOR</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sometype+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/style-dyrektor.css" />
+  </head>
+  <header>
+    <a href="/dyrektor/main"><div class="back"></div></a>
+    <div class="head">DYREKTOR - PRACOWNICY</div>
+    <a href="/"><div class="wyloguj"></div></a>
+  </header>
+  <body>
+    <div class="page">
+      WYSZUKAJ PRACOWNIKA
+      <form>
+        <input type="text" placeholder="WPISZ NAZWISKO"><br>
+        <input type="button" value="Szukaj">
+        <input type="button" value="Resetuj">
+      </form>
+
+      <div class="table">
+        <table>
+          <tr>
+            <th><div class="container"><div class="text">#</div><div class="sort"></div></div></th>
+            <th><div class="container"><div class="text">Nazwisko</div><div class="sort"></div></div></th>
+            <th><div class="container"><div class="text">Imię</div><div class="sort"></div></div></th>
+            <th><div class="container"><div class="text">Akademik</div><div class="sort"></div></div></th>
+            <th><div class="container"><div class="text">Stanowisko</div><div class="sort"></div></div></th>
+            <th><div class="container"><div class="text">Kontakt</div><div class="sort"></div></div></th>
+            <th><div class="container"><div class="text">Uwagi</div><div class="sort"></div></div></th>
+          </tr>
+        </table>
+      </div>
+
+      <a href="/dyrektor/pracownicy/dodaj"><div class="btnAdd">Dodaj pracownika</div></a>
+    </div>
+  </body>
+</html>

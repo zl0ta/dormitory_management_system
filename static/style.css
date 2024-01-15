@@ -13,7 +13,6 @@ body {
   padding: 0;
   color: white;
   font-family: "Sometype Mono";
-  background-color: #ebe3d6;
 }
 
 header {
@@ -24,6 +23,7 @@ header {
   align-items: center;
   font-size: 64px;
   justify-content: center;
+  font-family: "Sometype Mono";
 }
 
 .container {
@@ -74,7 +74,7 @@ button[type=submit]{
   transition: all 0.1s;
 }
 
-input[type=button]:hover{
+button[type=submit]:hover{
   transform: scale(1.005);
 }
 
