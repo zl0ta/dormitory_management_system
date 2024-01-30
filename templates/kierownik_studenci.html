@@ -1,45 +1,301 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>KIEROWNIK</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Sometype+Mono&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="static\style-kierownik.css" />
-  </head>
-  <header>
-    <a href="kierownik.html"><div class="back"></div></a>
-    <div class="head">KIEROWNIK - STUDENCI</div>
-    <a href="index.html"><div class="wyloguj"></div></a>
-  </header>
-  <body>
-    <div class="page">
-      WYSZUKAJ STUDENTA
-      <form>
-        <input type="text" placeholder="WPISZ NAZWISKO"><br>
-        <input type="button" value="Szukaj">
-        <input type="button" value="Resetuj">
-      </form>
 
-      <div class="table">
-        <table>
-          <tr>
-            <th><div class="container"><div class="text">#</div><div class="sort"></div></div></th>
-            <th><div class="container"><div class="text">Nazwisko</div><div class="sort"></div></div></th>
-            <th><div class="container"><div class="text">Imię</div><div class="sort"></div></div></th>
-            <th><div class="container"><div class="text">Pokój</div><div class="sort"></div></div></th>
-            <th><div class="container"><div class="text">NR albumu</div><div class="sort"></div></div></th>
-            <th><div class="container"><div class="text">Uwagi</div><div class="sort"></div></div></th>
-          </tr>
-        </table>
-      </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KIEROWNIK</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sometype+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style-kierownik.css" />
+</head>
+<header>
+  <a href="/kierownik/main">
+    <div class="back"></div>
+  </a>
+  <div class="head">KIEROWNIK - STUDENCI</div>
+  <a href="/">
+    <div class="wyloguj"></div>
+  </a>
+</header>
 
-      <a href="kierownik_dodawanie_studentow.html"><div class="btnAdd">Dodaj studenta</div></a>
+<body>
+  <div class="page">
+    WYSZUKAJ STUDENTA
+    <form>
+      <input type="text" placeholder="WPISZ NAZWISKO" id="nazwisko"><br>
+      <input type="button" value="Szukaj" id="searchButton">
+      <input type="button" value="Resetuj" id="resetButton">
+    </form>
+
+    <div class="table">
+      <table>
+        <tr>
+          <th>
+            <div class="container">
+              <div class="text">#</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByNumber())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Nazwisko</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByLastname())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Imię</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByFirstname())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">NR albumu</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByNRAlbumu())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Pokój</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByPokoj())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Kontakt</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByKontakt())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Uwagi</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByComments())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Edytuj</div>
+            </div>
+          </th>
+        </tr>
+
+        {% for student in studenci %}
+        <tr>
+          <td>{{ student.IdM }}</td>
+          <td>{{ student.Nazwisko }}</td>
+          <td>{{ student.Imie }}</td>
+          <td>{{ student.Indeks }}</td>
+          <td>{{ student.Pokoj }}</td>
+          <td>{{ student.Telefon }} {{ student.Email }}</td>
+          <td>{{ student.Uwagi }}</td>
+          <td><a href="/kierownik/studenci/edytuj/{{ student.IdM }}">
+              <div class="btnEdit"></div>
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
     </div>
-  </body>
+
+    <a href="/kierownik/studenci/dodaj">
+      <div class="btnAdd">Dodaj studenta</div>
+    </a>
+  </div>
+  <script>
+    function collectTableData() {
+      var table = document.querySelector('table');
+      var data = [];
+
+      for (var i = 1; i < table.rows.length; i++) {
+        var row = table.rows[i];
+        var rowData = {
+          Id: row.cells[0].textContent.trim(),
+          Nazwisko: row.cells[1].textContent.trim(),
+          Imie: row.cells[2].textContent.trim(),
+          NRAlbumu: row.cells[3].textContent.trim(),
+          Pokoj: row.cells[4].textContent.trim(),
+          Kontakt: row.cells[5].textContent.trim(),
+          Uwagi: row.cells[6].textContent.trim(),
+        };
+        data.push(rowData);
+      }
+
+      return data;
+    }
+
+    var data = collectTableData();
+
+    function updateTableWithData(newData) {
+      // Выберите таблицу и ее тело
+      var table = document.querySelector('table');
+      var tbody = table.getElementsByTagName('tbody')[0];
+
+      // Очистите существующие строки, кроме заголовка
+      while (tbody.rows.length > 1) {
+        tbody.deleteRow(1);
+        // Удаляйте строки, начиная со второй (индекс 1), пока не останется только заголовок
+      }
+
+      // Вставьте новые данные
+      newData.forEach(function (item) {
+        var row = tbody.insertRow();
+
+        var cellId = row.insertCell(0);
+        cellId.textContent = item.Id;
+
+        var cellLastname = row.insertCell(1);
+        cellLastname.textContent = item.Nazwisko;
+
+        var cellFirstname = row.insertCell(2);
+        cellFirstname.textContent = item.Imie;
+
+        var cellNRAlbumu = row.insertCell(3);
+        cellNRAlbumu.textContent = item.NRAlbumu;
+
+        var cellPokoj = row.insertCell(4);
+        cellPokoj.textContent = item.Pokoj;
+
+        var cellKontakt= row.insertCell(5);
+        cellKontakt.textContent = item.Kontakt;
+
+        var cellUwagi = row.insertCell(6);
+        cellUwagi.textContent = item.Uwagi;
+
+        var cellEdit = row.insertCell(7);
+        cellEdit.innerHTML = '<a href="/kierownik/studenci/edytuj/' + item.Id + '"><div class="btnEdit"></div></a>';
+      });
+    }
+
+    function sortDataByNumber() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var numberA = parseInt(a.Id, 10);
+        var numberB = parseInt(b.Id, 10);
+
+        return numberA - numberB;
+      });
+    }
+
+    function sortDataByLastname() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var lastnameA = a.Nazwisko.toUpperCase();
+        var lastnameB = b.Nazwisko.toUpperCase();
+
+        if (lastnameA < lastnameB) return -1;
+        if (lastnameA > lastnameB) return 1;
+
+        return 0;
+      });
+    }
+
+    // Функция для сортировки по имени
+    function sortDataByFirstname() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var firstnameA = a.Imie.toUpperCase();
+        var firstnameB = b.Imie.toUpperCase();
+
+        if (firstnameA < firstnameB) return -1;
+        if (firstnameA > firstnameB) return 1;
+
+        return 0;
+      });
+    }
+
+    function sortDataByPokoj() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var PokojA = a.Pokoj.toUpperCase();
+        var PokojB = b.Pokoj.toUpperCase();
+
+        return PokojA - PokojB;
+      });
+    }
+
+    function sortDataByNRAlbumu() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var NRAlbumuA = a.NRAlbumu.toUpperCase();
+        var NRAlbumuB = b.NRAlbumu.toUpperCase();
+
+        if (NRAlbumuA < NRAlbumuB) return -1;
+        if (NRAlbumuA > NRAlbumuB) return 1;
+
+        return 0;
+      });
+    }
+
+    function sortDataByComments() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var commentsA = a.Uwagi.toUpperCase();
+        var commentsB = b.Uwagi.toUpperCase();
+
+        if (commentsA === commentsB) return 0;
+        if (commentsA === "") return 1; // Пустые значения отправляются в конец
+        if (commentsB === "") return -1;
+
+        if (commentsA < commentsB) return -1;
+        if (commentsA > commentsB) return 1;
+
+        return 0;
+      });
+    }
+
+    function sortDataByKontakt() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var KontaktA = a.Kontakt.toUpperCase();
+        var KontaktB = b.Kontakt.toUpperCase();
+
+        if (KontaktA === KontaktB) return 0;
+        if (KontaktA === "") return 1; // Пустые значения отправляются в конец
+        if (KontaktB === "") return -1;
+
+        if (KontaktA < KontaktB) return -1;
+        if (KontaktA > KontaktB) return 1;
+
+        return 0;
+      });
+    }
+
+    function searchStudentByLastname() {
+      var lastnameInput = document.getElementById("nazwisko"); // Замените "symbol" на "nazwisko"
+      var filteredData = [];
+
+      var lastname = lastnameInput.value.trim().toUpperCase();
+
+      data.forEach(function (item) {
+        if (item.Nazwisko.toUpperCase().indexOf(lastname) !== -1) {
+          filteredData.push(item);
+        }
+      });
+
+      updateTableWithData(filteredData);
+    }
+
+
+    // Получаем кнопку "Szukaj"
+    var searchButton = document.getElementById("searchButton");
+
+    // Добавляем обработчик события на нажатие кнопки "Szukaj"
+    searchButton.addEventListener("click", searchStudentByLastname);
+
+    // Функция для сброса фильтра и восстановления исходных данных
+    function resetFilter() {
+      document.getElementById("nazwisko").value = ""; // Очищаем поле ввода
+      updateTableWithData(data); // Восстанавливаем исходные данные в таблице
+    }
+
+    // Получаем кнопку "Resetuj"
+    var resetButton = document.getElementById("resetButton");
+
+    // Добавляем обработчик события на нажатие кнопки "Resetuj"
+    resetButton.addEventListener("click", resetFilter);
+  </script>
+</body>
+
 </html>

@@ -3,7 +3,8 @@
   padding: 0;
   font-family: "Sometype Mono";
 }
-a{
+
+a {
   text-decoration: none;
 }
 
@@ -11,7 +12,7 @@ a{
   width: 0;
 }
 
-::placeholder{
+::placeholder {
   color: white;
 }
 
@@ -39,7 +40,7 @@ header {
   justify-content: center;
 }
 
-.empty{
+.empty {
   width: 100px;
   height: 100px;
   margin-left: auto;
@@ -53,7 +54,7 @@ header {
   display: block;
 }
 
-.back{
+.back {
   background-image: url(images/STRELKA.svg);
   width: 100px;
   height: 100px;
@@ -63,8 +64,8 @@ header {
 
 .container {
   display: flex;
-  justify-content: center; 
-  align-items: center; 
+  justify-content: center;
+  align-items: center;
 }
 
 .block {
@@ -75,18 +76,18 @@ header {
   transition: all 1s;
   color: #fff;
   text-align: center;
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 48px;
 }
 
-.block:hover{
+.block:hover {
   transform: scale(1.05);
 }
 
 
-.page{
+.page {
   font-size: 40px;
   padding-left: 40px;
   padding-top: 10px;
@@ -95,7 +96,7 @@ header {
 
 
 
-form input[type="text"]{
+form input {
   margin-top: 15px;
   width: 100%;
   height: 50px;
@@ -107,7 +108,7 @@ form input[type="text"]{
   padding-left: 20px;
 }
 
-input[type="button"]{
+input[type="button"] {
   background-color: #41576B;
   color: #fff;
   border-radius: 10px;
@@ -119,18 +120,18 @@ input[type="button"]{
   transition: all 0.1s;
 }
 
-input[type="button"]:hover{
+input[type="button"]:hover {
   transform: scale(1.005);
   cursor: pointer;
 }
 
-.label{
-  display: flex; 
+.label {
+  display: flex;
   margin-top: 15px;
   width: 500px;
 }
 
-.table{
+.table {
   width: 100%;
   height: 300px;
   font-size: 30px;
@@ -139,7 +140,7 @@ input[type="button"]:hover{
   border: 3px solid;
 }
 
-table{
+table {
   border: 1px solid;
   width: 100%;
   border-collapse: collapse;
@@ -160,7 +161,7 @@ table{
   border: 3px solid #ffffff;
 }
 
-th{
+th {
   border: 1px solid #111111;
   background-color: #41576B;
   color: #fff;
@@ -170,14 +171,14 @@ th{
   font-size: 20px;
 }
 
-td{
+td {
   border: 1px solid;
   padding: 0 5px;
   vertical-align: top;
   font-size: 18px;
 }
 
-.btnAdd{
+.btnAdd {
   background-color: #41576B;
   color: #fff;
   font-size: 30px;
@@ -194,11 +195,11 @@ td{
   border: 0;
 }
 
-.btnAdd:hover{
+.btnAdd:hover {
   transform: scale(1.005);
 }
 
-.sort{
+.sort {
   margin-left: auto;
   background-image: url(images/btnSort.svg);
   background-repeat: no-repeat;
@@ -207,7 +208,18 @@ td{
   cursor: pointer;
 }
 
-.text{
+.text {
   margin-left: 20px;
   margin-right: 10px;
+}
+
+.btnEdit{
+  display: flex;
+  justify-content: center;
+  margin: 5px auto;
+  background-image: url(images/edit_icon.png);
+  background-repeat: no-repeat;
+  background-size: 40px 40px;
+  height: 40px;
+  width: 40px;
 }

@@ -18,12 +18,15 @@
       <div class="block"></div>
       <div class="block" id="bbb">
         <label >LOGOWANIE</label>
+        <!-- error message -->
+        <div class="error">
+          <p>{{ error }}</p>
+        </div>
         <form action="/login" class="fLogowanie" method="post">
           <input type="login" placeholder="Login" class="supblock" name="login">
           <input type="password" placeholder="Hasło" class="supblock" name="password">
           <button type="submit" class="supblock">Zaloguj się</button>
         </form>
-        <div class="supblock">Zapomniałem hasło</div>
       </div>
     </div>
     <script>

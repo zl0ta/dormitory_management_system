@@ -1,46 +1,345 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DYREKTOR</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Sometype+Mono&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="/static/style-dyrektor.css" />
-  </head>
-  <header>
-    <a href="/dyrektor/main"><div class="back"></div></a>
-    <div class="head">DYREKTOR - PRACOWNICY</div>
-    <a href="/"><div class="wyloguj"></div></a>
-  </header>
-  <body>
-    <div class="page">
-      WYSZUKAJ PRACOWNIKA
-      <form>
-        <input type="text" placeholder="WPISZ NAZWISKO"><br>
-        <input type="button" value="Szukaj">
-        <input type="button" value="Resetuj">
-      </form>
 
-      <div class="table">
-        <table>
-          <tr>
-            <th><div class="container"><div class="text">#</div><div class="sort"></div></div></th>
-            <th><div class="container"><div class="text">Nazwisko</div><div class="sort"></div></div></th>
-            <th><div class="container"><div class="text">Imię</div><div class="sort"></div></div></th>
-            <th><div class="container"><div class="text">Akademik</div><div class="sort"></div></div></th>
-            <th><div class="container"><div class="text">Stanowisko</div><div class="sort"></div></div></th>
-            <th><div class="container"><div class="text">Kontakt</div><div class="sort"></div></div></th>
-            <th><div class="container"><div class="text">Uwagi</div><div class="sort"></div></div></th>
-          </tr>
-        </table>
-      </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DYREKTOR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sometype+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style-dyrektor.css" />
+</head>
+<header>
+  <a href="/dyrektor/main">
+    <div class="back"></div>
+  </a>
+  <div class="head">DYREKTOR - PRACOWNICY</div>
+  <a href="/">
+    <div class="wyloguj"></div>
+  </a>
+</header>
 
-      <a href="/dyrektor/pracownicy/dodaj"><div class="btnAdd">Dodaj pracownika</div></a>
+<body>
+  <div class="page">
+    WYSZUKAJ PRACOWNIKA
+    <form>
+      <input type="text" placeholder="WPISZ NAZWISKO" id="nazwisko"><br>
+      <input type="button" id="searchButton" value="Szukaj">
+      <input type="button" id="resetButton" value="Resetuj">
+    </form>
+
+    <div class="table">
+      <table>
+        <tr>
+          <th>
+            <div class="container">
+              <div class="text">#</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByNumber())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Nazwisko</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByLastname())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Imię</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByFirstname())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Akademik</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByAcademy())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Stanowisko</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByPosition())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Kontakt</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByContact())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Login</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByLogin())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Uwagi</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByComments())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Edytuj</div>
+            </div>
+          </th>
+        </tr>
+        {% for pracownik in pracownicy %}
+        <tr>
+          <td>{{ pracownik.IdP }}</td>
+          <td>{{ pracownik.Nazwisko }}</td>
+          <td>{{ pracownik.Imie }}</td>
+          <td>{{ pracownik.IdA }}</td>
+          <td>{{ pracownik.Stanowisko }}</td>
+          <td>{{ pracownik.Telefon }} {{ pracownik.Email }}</td>
+          <td>{{ pracownik.Login }}</td>
+          <td>{{ pracownik.Uwagi }}</td>
+          <td>
+            <a href="/dyrektor/pracownicy/edytuj/{{ pracownik.IdP }}">
+              <div class="btnEdit">
+
+              </div>
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
     </div>
-  </body>
+
+    <a href="/dyrektor/pracownicy/dodaj">
+      <div class="btnAdd">Dodaj pracownika</div>
+    </a>
+  </div>
+
+  <script>
+
+    // Функция для сбора данных из таблицы
+    function collectTableData() {
+      var table = document.querySelector('table');
+      var data = [];
+
+      for (var i = 1; i < table.rows.length; i++) {
+        var row = table.rows[i];
+        var rowData = {
+          IdP: row.cells[0].textContent.trim(),
+          Nazwisko: row.cells[1].textContent.trim(),
+          Imie: row.cells[2].textContent.trim(),
+          IdA: row.cells[3].textContent.trim(),
+          Stanowisko: row.cells[4].textContent.trim(),
+          Kontakt: row.cells[5].textContent.trim(),
+          Login: row.cells[6].textContent.trim(),
+          Uwagi: row.cells[7].textContent.trim()
+        };
+        data.push(rowData);
+      }
+
+      return data;
+    }
+
+
+    var data = collectTableData();
+    // Ваши функции для сортировки и обновления таблицы здесь...
+
+    // Функция для выполнения поиска сотрудников
+    // Функция для выполнения поиска сотрудника по фамилии
+    function searchEmployeeByLastname() {
+      var lastnameInput = document.getElementById("nazwisko"); // Замените "symbol" на "nazwisko"
+      var filteredData = [];
+
+      var lastname = lastnameInput.value.trim().toUpperCase();
+
+      data.forEach(function (item) {
+        if (item.Nazwisko.toUpperCase().indexOf(lastname) !== -1) {
+          filteredData.push(item);
+        }
+      });
+
+      updateTableWithData(filteredData);
+    }
+
+
+    // Получаем кнопку "Szukaj"
+    var searchButton = document.getElementById("searchButton");
+
+    // Добавляем обработчик события на нажатие кнопки "Szukaj"
+    searchButton.addEventListener("click", searchEmployeeByLastname);
+
+    // Функция для сброса фильтра и восстановления исходных данных
+    function resetFilter() {
+      document.getElementById("nazwisko").value = ""; // Очищаем поле ввода
+      updateTableWithData(data); // Восстанавливаем исходные данные в таблице
+    }
+
+    // Получаем кнопку "Resetuj"
+    var resetButton = document.getElementById("resetButton");
+
+    // Добавляем обработчик события на нажатие кнопки "Resetuj"
+    resetButton.addEventListener("click", resetFilter);
+
+
+
+    // Функция для сортировки по номеру
+    function sortDataByNumber() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var numberA = parseInt(a.IdP, 10);
+        var numberB = parseInt(b.IdP, 10);
+
+        return numberA - numberB;
+      });
+    }
+
+    // Функция для сортировки по фамилии
+    function sortDataByLastname() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var lastnameA = a.Nazwisko.toUpperCase();
+        var lastnameB = b.Nazwisko.toUpperCase();
+
+        if (lastnameA < lastnameB) return -1;
+        if (lastnameA > lastnameB) return 1;
+
+        return 0;
+      });
+    }
+
+    // Функция для сортировки по имени
+    function sortDataByFirstname() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var firstnameA = a.Imie.toUpperCase();
+        var firstnameB = b.Imie.toUpperCase();
+
+        if (firstnameA < firstnameB) return -1;
+        if (firstnameA > firstnameB) return 1;
+
+        return 0;
+      });
+    }
+
+    // Функция для сортировки по академику
+    function sortDataByAcademy() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var academyA = a.IdA.toUpperCase();
+        var academyB = b.IdA.toUpperCase();
+
+        if (academyA < academyB) return -1;
+        if (academyA > academyB) return 1;
+
+        return 0;
+      });
+    }
+
+    // Функция для сортировки по становищу
+    function sortDataByPosition() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var positionA = a.Stanowisko.toUpperCase();
+        var positionB = b.Stanowisko.toUpperCase();
+
+        if (positionA < positionB) return -1;
+        if (positionA > positionB) return 1;
+
+        return 0;
+      });
+    }
+
+    // Функция для сортировки по контакту
+    function sortDataByContact() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var contactA = (a.Telefon + " " + a.Email).toUpperCase();
+        var contactB = (b.Telefon + " " + b.Email).toUpperCase();
+
+        if (contactA < contactB) return -1;
+        if (contactA > contactB) return 1;
+
+        return 0;
+      });
+    }
+
+    // Функция для сортировки по логину
+    function sortDataByLogin() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var loginA = a.Login.toUpperCase();
+        var loginB = b.Login.toUpperCase();
+
+        if (loginA < loginB) return -1;
+        if (loginA > loginB) return 1;
+
+        return 0;
+      });
+    }
+
+    // Функция для сортировки по комментариям
+    function sortDataByComments() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var commentsA = a.Uwagi.toUpperCase();
+        var commentsB = b.Uwagi.toUpperCase();
+
+        if (commentsA === commentsB) return 0;
+        if (commentsA === "") return 1; // Пустые значения отправляются в конец
+        if (commentsB === "") return -1;
+
+        if (commentsA < commentsB) return -1;
+        if (commentsA > commentsB) return 1;
+
+        return 0;
+      });
+    }
+
+    // Функция для обновления таблицы данными
+    function updateTableWithData(newData) {
+      // Выберите таблицу и ее тело
+      var table = document.querySelector('table');
+      var tbody = table.getElementsByTagName('tbody')[0];
+
+      // Очистите существующие строки, кроме заголовка
+      while (tbody.rows.length > 1) {
+        tbody.deleteRow(1);
+        // Удаляйте строки, начиная со второй (индекс 1), пока не останется только заголовок
+      }
+
+      // Вставьте новые данные
+      newData.forEach(function (item) {
+        var row = tbody.insertRow();
+
+        var cellNumber = row.insertCell(0);
+        cellNumber.textContent = item.IdP;
+
+        var cellLastname = row.insertCell(1);
+        cellLastname.textContent = item.Nazwisko;
+
+        var cellFirstname = row.insertCell(2);
+        cellFirstname.textContent = item.Imie;
+
+        var cellAcademy = row.insertCell(3);
+        cellAcademy.textContent = item.IdA;
+
+        var cellPosition = row.insertCell(4);
+        cellPosition.textContent = item.Stanowisko;
+
+        var cellContact = row.insertCell(5);
+        cellContact.textContent = item.Kontakt;
+
+        var cellLogin = row.insertCell(6);
+        cellLogin.textContent = item.Login;
+
+        var cellComments = row.insertCell(7);
+        cellComments.textContent = item.Uwagi;
+
+        var cellEdit = row.insertCell(8);
+        cellEdit.innerHTML = '<a href="/dyrektor/pracownicy/edytuj/' + item.IdP + '"><div class="btnEdit"></div></a>';
+      });
+    }
+
+
+  </script>
+</body>
+
 </html>

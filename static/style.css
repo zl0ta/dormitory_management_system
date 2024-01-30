@@ -1,4 +1,4 @@
-*{
+* {
   margin: 0;
   padding: 0;
 }
@@ -63,22 +63,23 @@ select {
   font-size: px;
 }
 
-input[type=login], input[type=password]{
+input[type=login],
+input[type=password] {
   background-color: rgba(88, 131, 182, 50%);
   padding-left: 20px;
 }
 
-button[type=submit]{
+button[type=submit] {
   background-color: #41576B;
   color: white;
   transition: all 0.1s;
 }
 
-button[type=submit]:hover{
+button[type=submit]:hover {
   transform: scale(1.005);
 }
 
-::placeholder{
+::placeholder {
   color: white;
 }
 
@@ -91,9 +92,10 @@ button[type=submit]:hover{
   font-size: 40px;
   border: 0;
   margin-top: 15px;
+  cursor: pointer;
 }
 
-#bbb{
+#bbb {
   text-align: center;
   justify-items: center;
   padding-top: 100px;

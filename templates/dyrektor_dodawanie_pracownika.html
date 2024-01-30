@@ -19,60 +19,150 @@
   </header>
   <body>
     <div class="page">
-      <form action="">
+      <form action="/dyrektor/pracownicy/dodaj" method="post" onsubmit="return validateForm()">
+        <!-- JavaScript validation script -->
+        <script>
+          function validateForm() {
+            // Reset styles and error messages
+            resetStyles();
+
+            // Get form inputs
+            var nazwisko = document.forms[0]["nazwisko"].value.trim();
+            var imie = document.forms[0]["imie"].value.trim();
+            var password = document.forms[0]["password"].value.trim();
+            var dataUrodzenia = document.forms[0]["data_urodzenia"].value;
+            var dataZatrudnienia = document.forms[0]["data_zatrudnienia"].value;
+            var pensum = document.forms[0]["pensum"].value;
+            var telefon = document.forms[0]["telefon"].value.trim();
+
+            // Flag to check if the form is valid
+            var isValid = true;
+
+            // Check if required fields are not empty
+            if (nazwisko === "") {
+              addErrorStyles("nazwisko");
+              alert("Nazwisko nie może być puste.");
+              isValid = false;
+            }
+
+            if (imie === "") {
+              addErrorStyles("imie");
+              alert("Imię nie może być puste.");
+              isValid = false;
+            }
+
+            if (password === "") {
+              addErrorStyles("password");
+              alert("Hasło nie może być puste.");
+              isValid = false;
+            }
+
+            // Check age and employment date rules
+            var birthDate = new Date(dataUrodzenia);
+            var employmentDate = new Date(dataZatrudnienia);
+            var eighteenYearsAgo = new Date();
+            eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
+
+            if (birthDate > eighteenYearsAgo) {
+              addErrorStyles("data_urodzenia");
+              alert("Pracownik musi by pełnoletni.");
+              isValid = false;
+            }
+
+            if (employmentDate > birthDate + 18) {
+              addErrorStyles("data_zatrudnienia");
+              alert("Data zatrudnienia musi myć później od daty urodzenia + 18 lat.");
+              isValid = false;
+            }
+
+            // employmentDate <= today + 32 days
+            if (employmentDate > new Date().setDate(new Date().getDate() + 32)) {
+              addErrorStyles("data_zatrudnienia");
+              alert("Data zatrudnienia nie może być późniejsza niż 32 dni od dzisiaj.");
+              isValid = false;
+            }
+
+            if ( pensum >= 372) {
+              addErrorStyles("pensum");
+              alert("Pensum nie może być większe niż 372.");
+              isValid = false;
+            }
+
+            //phone number validation, length = [9, 12], contains only digits and + sign
+            if (!(9 <= telefon.length && telefon.length <= 12 && telefon.match(/^[0-9+]+$/))) {
+              addErrorStyles("telefon");
+              alert("Numer telefonu jest niepoprawny.");
+              isValid = false;
+            }
+
+            // Return false to prevent form submission if validation fails
+            return isValid;
+          }
+
+          // Helper function to add error styles
+          function addErrorStyles(fieldName) {
+            var inputField = document.forms[0][fieldName];
+            inputField.style.border = "2px solid red";
+          }
+
+          // Helper function to reset styles
+          function resetStyles() {
+            var inputFields = document.forms[0].getElementsByTagName("input");
+            for (var i = 0; i < inputFields.length; i++) {
+              inputFields[i].style.border = "";
+            }
+          }
+        </script>
+
         <div class="container">
           <div class="label">Nazwisko</div>
-          <input type="text" placeholder="Wpisz Nazwisko">
+          <input type="text" name="nazwisko" placeholder="Wpisz nazwisko">
         </div>
         <div class="container">
           <div class="label">Imię</div>
-          <input type="text" placeholder="Wpisz Imię">
+          <input type="text" name="imie" placeholder="Wpisz imię">
         </div>
         <div class="container">
           <div class="label">Stanowisko</div>
-          <input type="text" placeholder="Wpisz Stanowisko">
+          <select name="stanowisko">
+            {% for role_option in role_options %}
+            <option value="{{ role_option }}">{{ role_option }}</option>
+            {% endfor %}
+          </select>
         </div>
         <div class="container">
           <div class="label">Data urodzenia</div>
-          <input type="text" placeholder="Wpisz Data urodzenia">
+          <input type="date" name="data_urodzenia">
         </div>
         <div class="container">
           <div class="label">Data zatrudnienia</div>
-          <input type="text" placeholder="Wpisz Data zatrudnienia">
-        </div>
-        <div class="container">
-          <div class="label">Data zwolnienia</div>
-          <input type="text" placeholder="Wpisz Data zwolnienia">
+          <input type="date" name="data_zatrudnienia">
         </div>
         <div class="container">
           <div class="label">Pensja</div>
-          <input type="text" placeholder="Wpisz Pensja">
+          <input type="number" step="0.01" name="pensja" placeholder="Wpisz pensję">
         </div>
         <div class="container">
-          <div class="label">Etat</div>
-          <input type="text" placeholder="Wpisz Etat">
+          <div class="label">Pensum</div>
+          <input type="number" name="pensum" placeholder="Wpisz pensum">
         </div>
         <div class="container">
           <div class="label">Telefon</div>
-          <input type="text" placeholder="Wpisz Telefon">
+          <input type="tel" name="telefon" placeholder="Wpisz telefon">
         </div>
         <div class="container">
           <div class="label">E-mail</div>
-          <input type="text" placeholder="Wpisz E-mail">
-        </div>
-        <div class="container">
-          <div class="label">Login</div>
-          <input type="text" placeholder="Wpisz Login">
+          <input type="email" name="email" placeholder="Wpisz e-mail">
         </div>
         <div class="container">
           <div class="label">Hasło</div>
-          <input type="text" placeholder="Wpisz Hasło">
+          <input type="password" name="password" placeholder="Wpisz początkowe hasło">
         </div>
         <div class="container">
-          <div class="label">Pensja</div>
-          <input type="text" placeholder="Wpisz Pensja">
+          <div class="label">Uwagi</div>
+          <input type="text" name="uwagi" placeholder="Wpisz uwagi">
         </div>
-        <button class="btnAdd" style="margin-top: 50px;">Dodaj pracownikak</button>
+        <button class="btnAdd" style="margin-top: 50px;">Dodaj pracownika</button>
       </form>
     </div>
   </body>

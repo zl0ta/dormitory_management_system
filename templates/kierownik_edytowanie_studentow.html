@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KIEROWNIK</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sometype+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/style-kierownik.css" />
+  </head>
+  <header>
+    <a href="/kierownik/studenci"><div class="back"></div></a>
+    <div class="head">KIEROWNIK - EDYTOWANIE STUDENTÓW</div>
+    <a href="/"><div class="wyloguj"></div></a>
+  </header>
+  <body>
+    <div class="page">
+      <form action="/kierownik/studenci/edytuj/{{ student.IdM }}" method="post" onsubmit="return validateForm()">
+        <!-- add validation script -->      
+        <div class="container">
+          <div class="label">Nazwisko</div>
+          <input type="text" name="nazwisko" placeholder="Wpisz Nazwisko" value="{{student.Nazwisko}}">
+        </div>
+        <div class="container">
+          <div class="label">Imie</div>
+          <input type="text" name="imie" placeholder="Wpisz Imie" value="{{student.Imie}}">
+        </div>
+        <div class="container">
+          <div class="label">Indeks</div>
+          <input type="number" name="indeks" placeholder="Wpisz numer albumu" value="{{student.Indeks}}">
+        </div>
+        <div class="container">
+          <div class="label">Pokój</div>
+          <input type="number" name="pokoj" placeholder="Wpisz Pokój" value="{{student.Pokoj}}">
+        </div>
+        <div class="container">
+          <div class="label">Telefon</div>
+          <input type="tel" name="telefon" placeholder="Wpisz Telefon" value="{{student.Telefon}}">
+        </div>
+        <div class="container">
+          <div class="label">E-mail</div>
+          <input type="email" name="email" placeholder="Wpisz E-mail" value="{{student.Email}}">
+        </div>
+        <div class="container">
+          <div class="label">Uwagi</div>
+          <input type="text" name="uwagi" placeholder="Wpisz Uwagi" value="{{student.Uwagi}}">
+        </div>
+        <button class="btnAdd" style="margin-top: 50px;">Edytuj studenta</button>
+      </form>
+    </div>
+    <script>
+      function validateForm() {
+        // Reset styles and error messages
+        resetStyles();
+
+        // Get form inputs
+        var nazwisko = document.forms[0]["nazwisko"].value.trim();
+        var imie = document.forms[0]["imie"].value.trim();
+        var indeks = document.forms[0]["indeks"].value.trim();
+        var pokoj = document.forms[0]["pokoj"].value.trim();
+        var telefon = document.forms[0]["telefon"].value.trim();
+        var email = document.forms[0]["email"].value.trim();
+        var uwagi = document.forms[0]["uwagi"].value.trim();
+
+        // Flag to check if the form is valid
+        var isValid = true;
+
+        if (!(9 <= telefon.length && telefon.length <= 12 && telefon.match(/^[0-9+]+$/))) {
+              addErrorStyles("telefon");
+              alert("Numer telefonu jest niepoprawny.");
+              isValid = false;
+        }
+
+        // Check if required fields are not empty
+        if (nazwisko === "") {
+          addErrorStyles("nazwisko");
+          alert("Nazwisko nie może być puste.");
+          isValid = false;
+        }
+
+        if (imie === "") {
+          addErrorStyles("imie");
+          alert("Imię nie może być puste.");
+          isValid = false;
+        }
+
+        if (str(indeks).length !== 6) {
+          addErrorStyles("indeks");
+          alert("Indeks musi mieć 6 cyfr i to jest pole obligatoryjne.");
+          isValid = false;
+        }
+
+        // Check if indeks is indeksy list, if so - alert
+        if (indeksy.includes(indeks)) {
+          addErrorStyles("indeks");
+          alert("Indeks już jest zajęty.");
+          isValid = false;
+        }
+
+        if (pokoj === "") {
+          addErrorStyles("pokoj");
+          alert("Pokój nie może być pusty.");
+          isValid = false;
+        }
+
+        // Check if the input is valid
+        if (!isValid) {
+          return false;
+        }
+      }
+
+      function resetStyles() {
+        var inputs = document.getElementsByTagName("input");
+        for (var i = 0; i < inputs.length; i++) {
+          inputs[i].style.border = "1px solid #ccc";
+        }
+      }
+    </script>
+  </body>
+</html>

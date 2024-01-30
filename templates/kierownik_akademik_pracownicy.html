@@ -1,40 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>KIEROWNIK</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Sometype+Mono&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="/static/style-kierownik.css" />
-  </head>
-  <header>
-    <a href="kierownik.html"><div class="back"></div></a>
-    <div class="head">KIEROWNIK - AKADEMIK & PRACOWNICY</div>
-    <a href="index.html"><div class="wyloguj"></div></a>
-  </header>
-  <body>
-    <div class="page">
-      TWÓJ AKADEMIK
-      <form>
-        <input type="text" readonly><br>
-      </form>
-      PRACOWNICY TEGO AKADEMIKU
-      <div class="table" style="margin-top: 0; height: 400px;">
-        <table>
-          <tr>
-            <th><div class="container"><div class="text">#</div><div class="sort"></div></div></th>
-            <th><div class="container"><div class="text">Nazwisko</div><div class="sort"></div></div></th>
-            <th><div class="container"><div class="text">Imię</div><div class="sort"></div></div></th>
-            <th><div class="container"><div class="text">Stanowisko</div><div class="sort"></div></div></th>
-            <th><div class="container"><div class="text">Kontakt</div><div class="sort"></div></div></th>
-          </tr>
-        </table>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KIEROWNIK</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sometype+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style-kierownik.css" />
+</head>
+<header>
+  <a href="/kierownik/main">
+    <div class="back"></div>
+  </a>
+  <div class="head">KIEROWNIK - AKADEMIK & PRACOWNICY</div>
+  <a href="/">
+    <div class="wyloguj"></div>
+  </a>
+</header>
+
+<body>
+  <div class="page">
+    TWÓJ AKADEMIK
+    <form>
+      <!-- akademik info -->
+      <div class="container">
+        <input type="text" name="akademik_info" readonly value="{{akademik}}"><br>
       </div>
+    </form>
+    PRACOWNICY TEGO AKADEMIKU ORAZ DYREKTORZY
+    <div class="table" style="margin-top: 0; height: 400px;">
+      <table>
+        <tr>
+          <th>
+            <div class="container">
+              <div class="text">#</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByID())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Nazwisko</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByNazwisko())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Imię</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByImie())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Stanowisko</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByStanowisko())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Kontakt</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByKontakt())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Uwagi</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByUwagi())"></div>
+            </div>
+          </th>
+        </tr>
+
+        {% for pracownik in pracownicy %}
+        <tr>
+          <td>{{ pracownik.IdP }}</td>
+          <td>{{ pracownik.Nazwisko }}</td>
+          <td>{{ pracownik.Imie }}</td>
+          <td>{{ pracownik.Stanowisko }}</td>
+          <td>{{ pracownik.Telefon }} {{ pracownik.Email }}</td>
+          <td>{{ pracownik.Uwagi }}</td>
+        </tr>
+        {% endfor %}
+      </table>
     </div>
-  </body>
+  </div>
+  <script>
+    function collectTableData() {
+      var table = document.querySelector('table');
+      var data = [];
+  
+      for (var i = 1; i < table.rows.length; i++) {
+        var row = table.rows[i];
+        var rowData = {
+          id: parseInt(row.cells[0].innerText.trim(), 10),
+          nazwisko: row.cells[1].innerText.trim(),
+          imie: row.cells[2].innerText.trim(),
+          stanowisko: row.cells[3].innerText.trim(),
+          kontakt: row.cells[4].innerText.trim(),
+          uwagi: row.cells[5].innerText.trim(),
+        };
+        data.push(rowData);
+      }
+  
+      return data;
+    }
+  
+    var data = collectTableData();
+
+    function updateTableWithData(newData) {
+    var table = document.querySelector('table');
+    var tbody = table.getElementsByTagName('tbody')[0];
+
+    while (tbody.rows.length > 1) {
+      tbody.deleteRow(1);
+    }
+
+    newData.forEach(function (item) {
+      var row = tbody.insertRow();
+
+      var cellId = row.insertCell(0);
+      cellId.textContent = item.id;
+
+      var cellNazwisko = row.insertCell(1);
+      cellNazwisko.textContent = item.nazwisko;
+
+      var cellImie = row.insertCell(2);
+      cellImie.textContent = item.imie;
+
+      var cellStanowisko = row.insertCell(3);
+      cellStanowisko.textContent = item.stanowisko;
+
+      var cellKontakt = row.insertCell(4);
+      cellKontakt.textContent = item.kontakt;
+
+      var cellUwagi = row.insertCell(5);
+      cellUwagi.textContent = item.uwagi;
+    });
+  }
+  
+    function sortDataByID() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var idA = a.id;
+        var idB = b.id;
+        
+        if (idA < idB) return -1;
+        if (idA > idB) return 1;
+
+        return 0;
+      });
+    }
+
+    function sortDataByNazwisko() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var NazwiskoA = a.nazwisko.toUpperCase();
+        var NazwiskoB = b.nazwisko.toUpperCase();
+        
+        if (NazwiskoA < NazwiskoB) return -1;
+        if (NazwiskoA > NazwiskoB) return 1;
+
+        return 0;
+      });
+    }
+
+    function sortDataByImie() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var imieA = a.imie.toUpperCase();
+        var imieB = b.imie.toUpperCase();
+        
+        if (imieA < imieB) return -1;
+        if (imieA > imieB) return 1;
+
+        return 0;
+      });
+    }
+
+    function sortDataByStanowisko() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var stanowiskoA = a.stanowisko.toUpperCase();
+        var stanowiskoB = b.stanowisko.toUpperCase();
+        
+        if (stanowiskoA < stanowiskoB) return -1;
+        if (stanowiskoA > stanowiskoB) return 1;
+
+        return 0;
+      });
+    }
+
+    function sortDataByKontakt() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var kontaktA = a.kontakt.toUpperCase();
+        var kontaktB = b.kontakt.toUpperCase();
+
+        if (kontaktA === kontaktB) return 0;
+        if (kontaktA === "") return 1; // Пустые значения отправляются в конец
+        if (kontaktB === "") return -1;
+        
+        if (kontaktA < kontaktB) return -1;
+        if (kontaktA > kontaktB) return 1;
+
+        return 0;
+      });
+    }
+
+    function sortDataByUwagi() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var uwagiA = a.uwagi.toUpperCase();
+        var uwagiB = b.uwagi.toUpperCase();
+
+        if (uwagiA === uwagiB) return 0;
+        if (uwagiA === "") return 1; // Пустые значения отправляются в конец
+        if (uwagiB === "") return -1;
+        
+        if (uwagiA < uwagiB) return -1;
+        if (uwagiA > uwagiB) return 1;
+
+        return 0;
+      });
+    }
+  </script>
+</body>
 </html>

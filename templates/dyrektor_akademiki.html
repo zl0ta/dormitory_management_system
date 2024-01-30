@@ -1,56 +1,305 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DYREKTOR</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Sometype+Mono&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="/static/style-dyrektor.css" />
-  </head>
-  <header>
-    <a href="/dyrektor/main"><div class="back"></div></a>
-    <div class="head">DYREKTOR - AKADEMIKI</div>
-    <a href="/"><div class="wyloguj"></div></a>
-  </header>
-  <body>
-    <div class="page">
-      WYSZUKAJ AKADEMIK
-      <form>
-        <input type="text" placeholder="WPISZ SYMBOL"><br>
-        <input type="button" value="Szukaj">
-        <input type="button" value="Resetuj">
-      </form>
 
-      <div class="table">
-        <table>
-          <tr>
-            <th><div class="container"><div class="text">#</div><div class="sort"></div></div></th>
-            <th><div class="container"><div class="text">Symbol</div><div class="sort"></div></div></th>
-            <th><div class="container"><div class="text">Nazwa</div><div class="sort"></div></div></th>
-            <th><div class="container"><div class="text">Liczba pokoi</div><div class="sort"></div></div></th>
-            <th><div class="container"><div class="text">Status</div><div class="sort"></div></div></th>
-            <th><div class="container"><div class="text">Adres</div><div class="sort"></div></div></th>
-          </tr>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DYREKTOR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sometype+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style-dyrektor.css" />
+</head>
+<header>
+  <a href="/dyrektor/main">
+    <div class="back"></div>
+  </a>
+  <div class="head">DYREKTOR - AKADEMIKI</div>
+  <a href="/">
+    <div class="wyloguj"></div>
+  </a>
+</header>
 
-          {% for akademik in akademiki %}
-          <tr>
-              <td>{{ loop.index }}</td>
-              <td>{{ akademik.SymbolA }}</td>
-              <td>{{ akademik.NazwaA if akademik.NazwaA is not none else "brak danych" }}</td>
-              <td>{{ akademik.LiczbaPokoi if akademik.LiczbaPokoi is not none else "brak danych" }}</td>
-              <td>{{ akademik.Status if akademik.Status is not none else "brak danych" }}</td>
-              <td>{{ akademik.Adres if akademik.Adres is not none else "brak danych" }}</td>
-          </tr>
-          {% endfor %}
-        </table>
-      </div>
+<body>
+  <div class="page">
+    WYSZUKAJ AKADEMIK
+    <form>
+      <input type="text" placeholder="WPISZ SYMBOL" id="symbol"><br>
+      <input type="button" value="Szukaj">
+      <input type="button" value="Resetuj">
+    </form>
 
-      <a href="/dyrektor/akademiki/dodaj"><div class="btnAdd">Dodaj akademik</div></a>
+    <div class="table">
+      <table>
+        <tr>
+          <th>
+            <div class="container">
+              <div class="text">Symbol</div>
+              <div class="sort" onclick="updateTableWithData(sortDataBySymbol())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Nazwa</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByName())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Liczba pokoi</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByRoomCount())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Status</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByStatus())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Adres</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByAddress())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Uwagi</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByComments())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Edytuj</div>
+            </div>
+          </th>
+        </tr>
+
+        {% for akademik in akademiki %}
+        <tr>
+          <td>{{ akademik.SymbolA }}</td>
+          <td>{{ akademik.NazwaA if akademik.NazwaA is not none else "brak danych" }}</td>
+          <td>{{ akademik.LiczbaPokoi if akademik.LiczbaPokoi is not none else "brak danych" }}</td>
+          <td>{{ akademik.Status if akademik.Status is not none else "brak danych" }}</td>
+          <td>{{ akademik.Adres if akademik.Adres is not none else "brak danych" }}</td>
+          <td>{{ akademik.Uwagi if akademik.Uwagi is not none else "brak danych" }}</td>
+          <td><a href="/dyrektor/akademiki/edytuj/{{ akademik.SymbolA }}">
+              <div class="btnEdit"></div>
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
     </div>
-  </body>
+
+    <a href="/dyrektor/akademiki/dodaj">
+      <div class="btnAdd">Dodaj akademik</div>
+    </a>
+  </div>
+
+  <script>
+    function collectTableData() {
+      var table = document.querySelector('table');
+      var data = [];
+
+      for (var i = 1; i < table.rows.length; i++) {
+        var row = table.rows[i];
+        var rowData = {
+          symbol: row.cells[0].innerText.trim(),
+          name: row.cells[1].innerText.trim(),
+          roomCount: row.cells[2].innerText.trim(),
+          status: row.cells[3].innerText.trim(),
+          address: row.cells[4].innerText.trim(),
+          comments: row.cells[5].innerText.trim() // Добавляем данные для поля "Uwagi"
+        };
+        data.push(rowData);
+      }
+
+      return data;
+    }
+
+
+    var data = collectTableData();
+
+    function sortDataByComments() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var commentsA = a.comments.toUpperCase();
+        var commentsB = b.comments.toUpperCase();
+
+        if (commentsA === commentsB) return 0;
+        if (commentsA === "") return 1; // Пустые значения отправляются в конец
+        if (commentsB === "") return -1; // Пустые значения отправляются в конец
+
+        if (commentsA < commentsB) return -1;
+        if (commentsA > commentsB) return 1;
+
+        return 0;
+      });
+    }
+
+
+
+
+    function sortDataBySymbol() {
+      return data.sort(function (a, b) {
+        // Split the symbol into prefix (letters) and number
+        var splitA = a.symbol.split('-');
+        var splitB = b.symbol.split('-');
+
+        var prefixA = splitA[0].toUpperCase();
+        var prefixB = splitB[0].toUpperCase();
+
+        var numberA = parseInt(splitA[1], 10);
+        var numberB = parseInt(splitB[1], 10);
+
+        // Compare by prefix first
+        if (prefixA < prefixB) return -1;
+        if (prefixA > prefixB) return 1;
+
+        // If prefixes are equal, compare by number
+        return numberA - numberB;
+      });
+    }
+
+    function sortDataByName() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var nameA = a.name.toUpperCase();
+        var nameB = b.name.toUpperCase();
+
+        if (nameA === nameB) return 0;
+        if (nameA === "") return 1; // Пустые значения отправляются в конец
+        if (nameB === "") return -1;
+
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+
+        return 0;
+      });
+    }
+
+    function sortDataByRoomCount() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var roomCountA = parseInt(a.roomCount, 10);
+        var roomCountB = parseInt(b.roomCount, 10);
+
+        return roomCountA - roomCountB;
+      });
+    }
+
+    function sortDataByStatus() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var statusA = a.status.toUpperCase();
+        var statusB = b.status.toUpperCase();
+
+        if (statusA < statusB) return -1;
+        if (statusA > statusB) return 1;
+
+        return 0;
+      });
+    }
+
+    function sortDataByAddress() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var addressA = a.address.toUpperCase();
+        var addressB = b.address.toUpperCase();
+
+        if (addressA === addressB) return 0;
+        if (addressA === "") return 1; // Пустые значения отправляются в конец
+        if (addressB === "") return -1;
+
+        if (addressA < addressB) return -1;
+        if (addressA > addressB) return 1;
+
+        return 0;
+      });
+    }
+
+    function updateTableWithData(newData) {
+      // Select the table and its body
+      var table = document.querySelector('table');
+      var tbody = table.getElementsByTagName('tbody')[0];
+
+      // Clear existing rows, except the header
+      while (tbody.rows.length > 1) {
+        tbody.deleteRow(1);
+        // Always delete the second row (index 1) until only the header remains
+      }
+
+      // Insert new data
+      newData.forEach(function (item) {
+        var row = tbody.insertRow();
+
+        var cellSymbol = row.insertCell(0);
+        cellSymbol.textContent = item.symbol;
+
+        var cellName = row.insertCell(1);
+        cellName.textContent = item.name;
+
+        var cellRoomCount = row.insertCell(2);
+        cellRoomCount.textContent = item.roomCount;
+
+        var cellStatus = row.insertCell(3);
+        cellStatus.textContent = item.status;
+
+        var cellAddress = row.insertCell(4);
+        cellAddress.textContent = item.address;
+
+        var cellComments = row.insertCell(5); // Добавляем ячейку для "Uwagi"
+        cellComments.textContent = item.comments; // Отображаем данные для "Uwagi"
+
+        var cellEdit = row.insertCell(6); // Сдвигаем индекс на 1 из-за добавленной ячейки "Uwagi"
+        cellEdit.innerHTML = '<a href="http://127.0.0.1:5000/dyrektor/akademiki/edytuj/' + item.symbol + '"><div class="btnEdit"></div></a>';
+      });
+    }
+
+
+    // Функция для выполнения поиска академиков
+    function searchDormitoryBySymbol() {
+      var symbolInput = document.getElementById("symbol").value.trim().toUpperCase();
+      var filteredData = [];
+
+      // Проходим по всем данным и фильтруем по введенному символу
+      data.forEach(function (item) {
+        if (item.symbol.toUpperCase().indexOf(symbolInput) !== -1) {
+          filteredData.push(item);
+        }
+      });
+
+      // Обновляем таблицу с отфильтрованными данными
+      updateTableWithData(filteredData);
+    }
+
+    // Получаем кнопку "Szukaj"
+    var searchButton = document.querySelector('input[value="Szukaj"]');
+
+    // Добавляем обработчик события на нажатие кнопки "Szukaj"
+    searchButton.addEventListener("click", searchDormitoryBySymbol);
+
+    // Функция для сброса фильтра и восстановления исходных данных
+    function resetFilter() {
+      document.getElementById("symbol").value = ""; // Очищаем поле ввода
+      updateTableWithData(data); // Восстанавливаем исходные данные в таблице
+    }
+
+    // Получаем кнопку "Resetuj"
+    var resetButton = document.querySelector('input[value="Resetuj"]');
+
+    // Добавляем обработчик события на нажатие кнопки "Resetuj"
+    resetButton.addEventListener("click", resetFilter);
+
+
+
+    // function findDormitoryBySymbol(){
+    //   var symbolInput = document.getElementById("symbol");
+
+    //   var data =
+    // }
+  </script>
+</body>
+
 </html>

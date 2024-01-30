@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PORTIER</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Sometype+Mono&display=swap"
+          rel="stylesheet"
+        />
+        <link rel="stylesheet" href="/static/style-dyrektor.css" />
+    </head>
+    <header>
+        <a href="/portier/usterki"><div class="back"></div></a>
+        <div class="head">PORTIER - EDYTOWANIE USTERKI</div>
+        <a href="/"><div class="wyloguj"></div></a>
+    </header>
+    <body>
+        <div class="page">
+            <form action="/portier/usterki/edytuj/{{usterka.IdU}}" method="POST" onsubmit="return validateForm()">
+              <div class="container">
+                <div class="label">Pokój</div>
+                <input type="number" step="1" name="pokoj" placeholder="Wpisz Pokój" value="{{usterka.Pokoj}}">
+              </div>
+              <div class="container">
+                <div class="label">Data zgłoszenia</div>
+                <input type="date" name="data_zgloszenia" value="{{usterka.DZgloszenia}}" disabled>
+              </div>
+              <div class="container">
+                <div class="label">Status</div>
+                <select name="status">
+                  {% for status_option in status_options %}
+                  <option value="{{ status_option }}" {% if status_option == usterka.Status %} selected {% endif %}>{{ status_option }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="container">
+                <div class="label">Opis</div>
+                <input type="text" name="opis" placeholder="Wpisz Opis" value="{{usterka.Opis}}">
+              </div>
+              <button class="btnAdd" style="margin-top: 50px;">Edytuj usterkę</button>
+            </form>
+        </div>
+    </body>
+    <script>
+      function validateForm() {
+        // Reset styles and error messages
+        resetStyles();
+
+        // Get form inputs
+        var pokoj = document.forms[0]["pokoj"].value.trim();
+        var opis = document.forms[0]["opis"].value.trim();
+      
+        // Flag to check if the form is valid
+        var isValid = true;
+
+        if (opis === "") {
+          addErrorStyles("opis");
+          alert("Opis nie może być pusty.");
+          isValid = false;
+        }
+
+        // Return false to prevent form submission if validation fails
+        return isValid;
+      }
+
+      // Helper function to add error styles
+      function addErrorStyles(fieldName) {
+        var inputField = document.forms[0][fieldName];
+        inputField.style.border = "2px solid red";
+      }
+
+      // Helper function to reset styles
+      function resetStyles() {
+        var inputFields = document.forms[0].getElementsByTagName("input");
+        for (var i = 0; i < inputFields.length; i++) {
+          inputFields[i].style.border = "";
+        }
+      }
+    </script>
+</html>

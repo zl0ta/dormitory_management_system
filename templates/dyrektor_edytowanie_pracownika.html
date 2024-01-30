@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DYREKTOR</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Sometype+Mono&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/static/style-dyrektor.css" />
+</head>
+<header>
+    <a href="/dyrektor/pracownicy">
+        <div class="back"></div>
+    </a>
+    <div class="head">DYREKTOR - EDYTOWANIE PRACOWNIKA</div>
+    <a href="/">
+        <div class="wyloguj"></div>
+    </a>
+</header>
+
+<body>
+    <div class="page">
+        <form action="/dyrektor/pracownicy/edytuj/{{ pracownik.IdP }}" method="post" onsubmit="return validateForm()">
+            <input type="hidden" name="IdP" value="{{ pracownik.IdP }}">
+            <div class="container">
+                <div class="label">Nazwisko</div>
+                <input type="text" name="nazwisko" value="{{ pracownik.Nazwisko }}">
+            </div>
+            <div class="container">
+                <div class="label">Imię</div>
+                <input type="text" name="imie" value="{{ pracownik.Imie }}">
+            </div>
+            <div class="container">
+                <div class="label">Stanowisko</div>
+                <select name="stanowisko" class="choose_con">
+                    {% for role_option in role_options %}
+                    <option value="{{ role_option }}" {% if role_option==pracownik.Stanowisko %} selected {% endif %}>{{
+                        role_option }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="container">
+                <div class="label">Akademik</div>
+                <select name="akademik" class="choose_con">
+                    {% for akademik in akademiki %}
+                    <option value="{{ akademik }}" {% if akademik == pracownik.IdA %} selected {% endif %}>{{ akademik }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="container">
+                <div class="label">Data urodzenia</div>
+                <input type="date" name="data_urodzenia" value="{{ pracownik.DUr }}">
+            </div>
+            <div class="container">
+                <div class="label">Data zatrudnienia</div>
+                <input type="date" name="data_zatrudnienia" value="{{ pracownik.DZatr }}">
+            </div>
+            <div class="container">
+                <div class="label">Pensja</div>
+                <input type="number" step="0.01" name="pensja" value="{{ pracownik.Pensja }}">
+            </div>
+            <div class="container">
+                <div class="label">Pensum</div>
+                <input type="number" step="1" name="pensum" value="{{ pracownik.Pensum }}">
+            </div>
+            <div class="container">
+                <div class="label">Telefon</div>
+                <input type="tel" name="telefon" value="{{ pracownik.Telefon }}">
+            </div>
+            <div class="container">
+                <div class="label">E-mail</div>
+                <input type="email" name="email" value="{{ pracownik.E_mail }}">
+            </div>
+            <div class="container">
+                <div class="label">Uwagi</div>
+                <input type="text" name="uwagi" value="{{ pracownik.Uwagi }}">
+            </div>
+            <button class="btnAdd" style="margin-top: 50px;">Edytuj pracownika</button>
+        </form>
+        
+    </div>
+    <script>
+        function validateForm() {
+            // Reset styles and error messages
+            resetStyles();
+
+            // Get form inputs
+            var nazwisko = document.forms[0]["nazwisko"].value.trim();
+            var imie = document.forms[0]["imie"].value.trim();
+            var dataUrodzenia = document.forms[0]["data_urodzenia"].value;
+            var dataZatrudnienia = document.forms[0]["data_zatrudnienia"].value;
+            var pensum = document.forms[0]["pensum"].value;
+            var telefon = document.forms[0]["telefon"].value.trim();
+
+            // Flag to check if the form is valid
+            var isValid = true;
+
+            // Check if required fields are not empty
+            if (nazwisko === "") {
+                addErrorStyles("nazwisko");
+                alert("Nazwisko nie może być puste.");
+                isValid = false;
+            }
+
+            if (imie === "") {
+                addErrorStyles("imie");
+                alert("Imię nie może być puste.");
+                isValid = false;
+            }
+
+
+            // Check age and employment date rules
+            var birthDate = new Date(dataUrodzenia);
+            var employmentDate = new Date(dataZatrudnienia);
+            var eighteenYearsAgo = new Date();
+            eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
+
+            if (birthDate > eighteenYearsAgo) {
+                addErrorStyles("data_urodzenia");
+                alert("Pracownik musi by pełnoletni.");
+                isValid = false;
+            }
+
+            if (employmentDate > birthDate + 18) {
+                addErrorStyles("data_zatrudnienia");
+                alert("Data zatrudnienia musi myć później od daty urodzenia + 18 lat.");
+                isValid = false;
+            }
+
+            // employmentDate <= today + 32 days
+            if (employmentDate > new Date().setDate(new Date().getDate() + 32)) {
+                addErrorStyles("data_zatrudnienia");
+                alert("Data zatrudnienia nie może być późniejsza niż 32 dni od dzisiaj.");
+                isValid = false;
+            }
+
+            if (pensum >= 372) {
+                addErrorStyles("pensum");
+                alert("Pensum nie może być większe niż 372.");
+                isValid = false;
+            }
+
+            //phone number validation, length = [9, 12], contains only digits and + sign
+            if (!(9 <= telefon.length && telefon.length <= 12 && telefon.match(/^[0-9+]+$/))) {
+              addErrorStyles("telefon");
+              alert("Numer telefonu jest niepoprawny.");
+              isValid = false;
+            }
+
+            // Return false to prevent form submission if validation fails
+            return isValid;
+        }
+
+        // Helper function to add error styles
+        function addErrorStyles(fieldName) {
+            var inputField = document.forms[0][fieldName];
+            inputField.style.border = "2px solid red";
+        }
+
+        // Helper function to reset styles
+        function resetStyles() {
+            var inputFields = document.forms[0].getElementsByTagName("input");
+            for (var i = 0; i < inputFields.length; i++) {
+                inputFields[i].style.border = "";
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,45 +1,249 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PORTIER</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Sometype+Mono&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="static\style-portier.css" />
-  </head>
-  <header>
-    <a href="portier.html"><div class="back"></div></a>
-    <div class="head">PORTIER - USTERKI</div>
-    <a href="index.html"><div class="wyloguj"></div></a>
-  </header>
-  <body>
-    <div class="page">
-      WYSZUKAJ USTERKĘ
-      <form>
-        <input type="text" placeholder="WPISZ NUMER USTERKI"><br>
-        <input type="button" value="Szukaj">
-        <input type="button" value="Resetuj">
-      </form>
 
-      <div class="table">
-        <table>
-          <tr>
-            <th><div class="container"><div class="text">#</div><div class="sort"></div></div></th>
-            <th><div class="container"><div class="text">Akademik</div><div class="sort"></div></div></th>
-            <th><div class="container"><div class="text">Pokój</div><div class="sort"></div></div></th>
-            <th><div class="container"><div class="text">Data zgłoszenia</div><div class="sort"></div></div></th>
-            <th><div class="container"><div class="text">Status</div><div class="sort"></div></div></th>
-            <th><div class="container"><div class="text">Uwagi</div><div class="sort"></div></div></th>
-          </tr>
-        </table>
-      </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PORTIER</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sometype+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style-portier.css" />
+</head>
+<header>
+  <a href="/portier/main">
+    <div class="back"></div>
+  </a>
+  <div class="head">PORTIER - USTERKI</div>
+  <a href="/">
+    <div class="wyloguj"></div>
+  </a>
+</header>
 
-      <a href="portier_dodawanie_usterki.html"><div class="btnAdd">Dodaj usterkę</div></a>
+<body>
+  <div class="page">
+    WYSZUKAJ USTERKĘ
+    <form>
+      <input type="text" placeholder="WPISZ NR POKOJU" id="Pokoj"><br>
+      <input type="button" value="Szukaj" id="searchButton">
+      <input type="button" value="Resetuj" id="resetButton">
+    </form>
+
+    <div class="table">
+      <table>
+        <tr>
+          <th>
+            <div class="container">
+              <div class="text">#</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByNumber())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Pokój</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByPokoj())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Data zgłoszenia</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByDZgloszenia())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Status</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByStatus())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Opis</div>
+              <div class="sort" onclick="updateTableWithData(sortDataByComments())"></div>
+            </div>
+          </th>
+          <th>
+            <div class="container">
+              <div class="text">Edytuj</div>
+            </div>
+          </th>
+        </tr>
+
+        {% for usterka in usterki %}
+        <tr>
+          <td>{{usterka.IdU}}</td>
+          <td>{{usterka.Pokoj}}</td>
+          <td>{{usterka.DZgloszenia}}</td>
+          <td>{{usterka.Status}}</td>
+          <td>{{usterka.Opis}}</td>
+          <td><a href="/portier/usterki/edytuj/{{usterka.IdU}}">
+              <div class="btnEdit"></div>
+            </a></td>
+        </tr>
+        {% endfor %}
+      </table>
     </div>
-  </body>
+
+    <a href="/portier/usterki/dodaj">
+      <div class="btnAdd">Dodaj usterkę</div>
+    </a>
+  </div>
+
+  <script>
+    function collectTableData() {
+      var table = document.querySelector('table');
+      var data = [];
+
+      for (var i = 1; i < table.rows.length; i++) {
+        var row = table.rows[i];
+        var rowData = {
+          Id: row.cells[0].textContent.trim(),
+          Pokoj: row.cells[1].textContent.trim(),
+          DZgloszenia: row.cells[2].textContent.trim(),
+          Status: row.cells[3].textContent.trim(),
+          Opis: row.cells[4].textContent.trim(),
+        };
+        data.push(rowData);
+      }
+
+      return data;
+    }
+
+    var data = collectTableData();
+
+    function updateTableWithData(newData) {
+      // Выберите таблицу и ее тело
+      var table = document.querySelector('table');
+      var tbody = table.getElementsByTagName('tbody')[0];
+
+      // Очистите существующие строки, кроме заголовка
+      while (tbody.rows.length > 1) {
+        tbody.deleteRow(1);
+        // Удаляйте строки, начиная со второй (индекс 1), пока не останется только заголовок
+      }
+
+      // Вставьте новые данные
+      newData.forEach(function (item) {
+        var row = tbody.insertRow();
+
+        var cellId = row.insertCell(0);
+        cellId.textContent = item.Id;
+
+        var cellPokoj = row.insertCell(1);
+        cellPokoj.textContent = item.Pokoj;
+
+        var cellDZgloszenia = row.insertCell(2);
+        cellDZgloszenia.textContent = item.DZgloszenia;
+
+        var cellStatus = row.insertCell(3);
+        cellStatus.textContent = item.Status;
+
+        var cellOpis = row.insertCell(4);
+        cellOpis.textContent = item.Opis;
+
+        var cellEdit = row.insertCell(5);
+        cellEdit.innerHTML = '<a href="/portier/usterki/edytuj/' + item.IdP + '"><div class="btnEdit"></div></a>';
+      });
+    }
+
+    function sortDataByNumber() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var numberA = parseInt(a.Id, 10);
+        var numberB = parseInt(b.Id, 10);
+
+        return numberA - numberB;
+      });
+    }
+
+    function sortDataByPokoj() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var PokojA = a.Pokoj.toUpperCase();
+        var PokojB = b.Pokoj.toUpperCase();
+
+        return PokojA - PokojB;
+      });
+    }
+
+    function sortDataByDZgloszenia() {
+  var data = collectTableData();
+  return data.sort(function (a, b) {
+    var dateA = new Date(a.DZgloszenia);
+    var dateB = new Date(b.DZgloszenia);
+
+    if (dateA < dateB) return -1;
+    if (dateA > dateB) return 1;
+
+    return 0;
+  });
+}
+
+
+    function sortDataByComments() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var commentsA = a.Opis.toUpperCase();
+        var commentsB = b.Opis.toUpperCase();
+
+        if (commentsA === commentsB) return 0;
+        if (commentsA === "") return 1; // Пустые значения отправляются в конец
+        if (commentsB === "") return -1;
+
+        if (commentsA < commentsB) return -1;
+        if (commentsA > commentsB) return 1;
+
+        return 0;
+      });
+    }
+
+    function sortDataByStatus() {
+      var data = collectTableData();
+      return data.sort(function (a, b) {
+        var StatusA = a.Status.toUpperCase();
+        var StatusB = b.Status.toUpperCase();
+
+        if (StatusA < StatusB) return -1;
+        if (StatusA > StatusB) return 1;
+
+        return 0;
+      });
+    }
+
+    function searchUsterkaByPokoj() {
+      var PokojInput = document.getElementById("Pokoj"); // Замените "symbol" на "nazwisko"
+      var filteredData = [];
+
+      var Pokoj = PokojInput.value.trim().toUpperCase();
+
+      data.forEach(function (item) {
+        if (item.Pokoj.toUpperCase().indexOf(Pokoj) !== -1) {
+          filteredData.push(item);
+        }
+      });
+
+      updateTableWithData(filteredData);
+    }
+
+
+    // Получаем кнопку "Szukaj"
+    var searchButton = document.getElementById("searchButton");
+
+    // Добавляем обработчик события на нажатие кнопки "Szukaj"
+    searchButton.addEventListener("click", searchUsterkaByPokoj);
+
+    // Функция для сброса фильтра и восстановления исходных данных
+    function resetFilter() {
+      document.getElementById("Pokoj").value = ""; // Очищаем поле ввода
+      updateTableWithData(data); // Восстанавливаем исходные данные в таблице
+    }
+
+    // Получаем кнопку "Resetuj"
+    var resetButton = document.getElementById("resetButton");
+
+    // Добавляем обработчик события на нажатие кнопки "Resetuj"
+    resetButton.addEventListener("click", resetFilter);
+  </script>
+</body>
+
 </html>
