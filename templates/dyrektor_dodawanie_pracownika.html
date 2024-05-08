@@ -89,7 +89,7 @@
             }
 
             //phone number validation, length = [9, 12], contains only digits and + sign
-            if (!(9 <= telefon.length && telefon.length <= 12 && telefon.match(/^[0-9+]+$/))) {
+            if (!(9 <= telefon.length && telefon.length <= 12 && telefon.match(/^[0-9+]+$/)) && telefon !== "") {
               addErrorStyles("telefon");
               alert("Numer telefonu jest niepoprawny.");
               isValid = false;

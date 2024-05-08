@@ -1,14 +1,9 @@
 from datetime import timedelta
 from flask import Flask, render_template, request, redirect, session
 import mysql.connector
-from flask_wtf.csrf import CSRFProtect
 
 app = Flask(__name__)
 app.secret_key = 'dormitory'  # Change this to a secure key
-csrf = CSRFProtect(app)
-
-# Disable CSRF protection for testing (remove this in production)
-app.config['WTF_CSRF_ENABLED'] = False
 
 # MySQL Database Configuration
 db_config = {
@@ -404,8 +399,10 @@ def dyrektor_pracownicy_edytuj_page(id):
                 cursor = connection.cursor(dictionary=True)
                 
                 # Update the employee details
-                query = "UPDATE pracownicy SET Nazwisko = %s, Imie = %s, Stanowisko = %s, IdA = %s, DUr = %s, DZatr = %s, Pensja = %s, Pensum = %s, Telefon = %s, E_mail = %s, Uwagi = %s WHERE IdP = %s"
-                cursor.execute(query, (request.form['nazwisko'], request.form['imie'], request.form['stanowisko'], request.form['akademik'], request.form['data_urodzenia'], request.form['data_zatrudnienia'], request.form['pensja'], request.form['pensum'], request.form['telefon'], request.form['email'], request.form['uwagi'], id),)
+                akademik = request.form['akademik']
+                if (akademik == 'Brak'): akademik = None
+                query = "UPDATE pracownicy SET Nazwisko = %s, Imie = %s, Stanowisko = %s, DUr = %s, DZatr = %s, Pensja = %s, Pensum = %s, Telefon = %s, E_mail = %s, IdA = %s, Uwagi = %s WHERE IdP = %s"
+                cursor.execute(query, (request.form['nazwisko'], request.form['imie'], request.form['stanowisko'], request.form['data_urodzenia'], request.form['data_zatrudnienia'], request.form['pensja'], request.form['pensum'], request.form['telefon'], request.form['email'], akademik, request.form['uwagi'], id))
                 connection.commit()
 
                 return redirect('/dyrektor/pracownicy')
@@ -518,7 +515,13 @@ def kierownik_studenci_edytuj_page(id):
                 cursor.execute(query, (id,))
                 student = cursor.fetchone()
 
-                return render_template('kierownik_edytowanie_studentow.html', username=session['username'], student=student)
+                # Get all indeksy
+                query = "SELECT Indeks FROM mieszkancy"
+                cursor.execute(query)
+                indeksy = cursor.fetchall()
+                indeksy = [indeks['Indeks'] for indeks in indeksy]
+
+                return render_template('kierownik_edytowanie_studentow.html', username=session['username'], student=student, indeksy=indeksy)
             
             except mysql.connector.Error as err:
                 print("Error connecting to the database:", err)
@@ -762,10 +765,6 @@ def portier_akademik_pracownicy_page():
                 connection.close()
     else:
         return redirect('/')
-
-
-
-
 
 # Route to handle logout
 @app.route('/logout')

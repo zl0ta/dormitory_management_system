@@ -51,12 +51,13 @@
         </div>
         <button class="btnAdd" style="margin-top: 50px;">Edytuj studenta</button>
       </form>
+      
     </div>
     <script>
       function validateForm() {
         // Reset styles and error messages
         resetStyles();
-
+        
         // Get form inputs
         var nazwisko = document.forms[0]["nazwisko"].value.trim();
         var imie = document.forms[0]["imie"].value.trim();
@@ -66,13 +67,15 @@
         var email = document.forms[0]["email"].value.trim();
         var uwagi = document.forms[0]["uwagi"].value.trim();
 
+        var indeksy_json = {{indeksy | tojson }};
+
         // Flag to check if the form is valid
         var isValid = true;
 
-        if (!(9 <= telefon.length && telefon.length <= 12 && telefon.match(/^[0-9+]+$/))) {
-              addErrorStyles("telefon");
-              alert("Numer telefonu jest niepoprawny.");
-              isValid = false;
+        if (!(9 <= telefon.length && telefon.length <= 12 && telefon.match(/^[0-9+]+$/)) && telefon !== "") {
+          addErrorStyles("telefon");
+          alert("Numer telefonu jest niepoprawny.");
+          isValid = false;
         }
 
         // Check if required fields are not empty
@@ -88,14 +91,13 @@
           isValid = false;
         }
 
-        if (str(indeks).length !== 6) {
+        if (String(indeks).length !== 6) {
           addErrorStyles("indeks");
           alert("Indeks musi mieć 6 cyfr i to jest pole obligatoryjne.");
           isValid = false;
         }
-
         // Check if indeks is indeksy list, if so - alert
-        if (indeksy.includes(indeks)) {
+        if (indeksy_json.includes(indeks)) {
           addErrorStyles("indeks");
           alert("Indeks już jest zajęty.");
           isValid = false;
@@ -103,22 +105,26 @@
 
         if (pokoj === "") {
           addErrorStyles("pokoj");
-          alert("Pokój nie może być pusty.");
+          alert("Pole Pokój nie może być puste.");
           isValid = false;
         }
 
         // Check if the input is valid
-        if (!isValid) {
-          return false;
-        }
+        return isValid;
       }
 
-      function resetStyles() {
-        var inputs = document.getElementsByTagName("input");
-        for (var i = 0; i < inputs.length; i++) {
-          inputs[i].style.border = "1px solid #ccc";
+      function addErrorStyles(fieldName) {
+            var inputField = document.forms[0][fieldName];
+            inputField.style.border = "2px solid red";
         }
-      }
+
+        // Helper function to reset styles
+        function resetStyles() {
+            var inputFields = document.forms[0].getElementsByTagName("input");
+            for (var i = 0; i < inputFields.length; i++) {
+                inputFields[i].style.border = "";
+            }
+        }
     </script>
   </body>
 </html>

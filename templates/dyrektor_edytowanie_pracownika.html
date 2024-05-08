@@ -44,6 +44,7 @@
             <div class="container">
                 <div class="label">Akademik</div>
                 <select name="akademik" class="choose_con">
+                    <option>Brak</option>
                     {% for akademik in akademiki %}
                     <option value="{{ akademik }}" {% if akademik == pracownik.IdA %} selected {% endif %}>{{ akademik }}</option>
                     {% endfor %}
@@ -143,10 +144,19 @@
             }
 
             //phone number validation, length = [9, 12], contains only digits and + sign
-            if (!(9 <= telefon.length && telefon.length <= 12 && telefon.match(/^[0-9+]+$/))) {
+            if (!(9 <= telefon.length && telefon.length <= 12 && telefon.match(/^[0-9+]+$/)) && telefon != "") {
               addErrorStyles("telefon");
               alert("Numer telefonu jest niepoprawny.");
               isValid = false;
+            }
+
+            //if Stnowisko = Dyrektor, then Akademik nie może być wybrany
+            var stanowisko = document.forms[0]["stanowisko"].value;
+            var akademik = document.forms[0]["akademik"].value;
+            if (stanowisko == "Dyrektor" && akademik != "Brak") {
+                addErrorStyles("akademik");
+                alert("Dyrektor nie może być przypisany do akademika.");
+                isValid = false;
             }
 
             // Return false to prevent form submission if validation fails
